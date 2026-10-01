@@ -6,3 +6,11 @@ node_modules/
 /blob-report/
 /playwright/.cache/
 /playwright/.auth/
+
+# run-coffee-cart-tests driver screenshots
+/driver-out/
+
+
+.claude/rules/**.olha.md
+.env
+.DS_Store
