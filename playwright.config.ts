@@ -41,7 +41,7 @@ export default defineConfig({
     {
       name: 'chromium',
       use: {
-        ...devices['iPhone 11 Pro Max'],
+        ...devices['Desktop Chrome'],
         // viewport: { width: 1920, height: 1080 },
       },
     },

@@ -13,3 +13,4 @@ node_modules/
 
 .claude/rules/**.olha.md
 .env
+.DS_Store

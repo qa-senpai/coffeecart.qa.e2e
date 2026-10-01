@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Coffee Promo — if/else demo</title>
+  <style>
+    :root {
+      --bg: #f6f1eb;
+      --card: #ffffff;
+      --text: #2b1d14;
+      --muted: #7a6a5f;
+      --accent: #b5652b;
+      --accent-dark: #8e4c1d;
+      --success: #2f8f5b;
+      --border: #e7ddd3;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 16px;
+      background: var(--bg);
+      color: var(--text);
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      box-shadow: 0 10px 30px rgba(43, 29, 20, 0.08);
+    }
+
+    h1 { margin: 0 0 4px; font-size: 22px; }
+    .subtitle { margin: 0 0 20px; color: var(--muted); font-size: 14px; }
+
+    .item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 0;
+      border-top: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 20px;
+    }
+    .item-name { font-weight: 600; }
+    .price { font-size: 20px; font-weight: 700; }
+    .price.discounted { color: var(--success); }
+    .old-price { color: var(--muted); text-decoration: line-through; font-size: 14px; margin-right: 8px; }
+
+    .promo {
+      display: none;
+      background: #fff6ec;
+      border: 1px dashed var(--accent);
+      border-radius: 12px;
+      padding: 16px;
+      margin-bottom: 20px;
+    }
+    .promo p { margin: 0 0 12px; font-size: 14px; }
+    body.has-promo .promo { display: block; }
+
+    button {
+      width: 100%;
+      border: 0;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.15s ease;
+    }
+    .btn-promo { background: var(--accent); color: #fff; }
+    .btn-promo:hover { background: var(--accent-dark); }
+    .btn-checkout { background: var(--text); color: #fff; }
+    .btn-checkout:hover { background: #000; }
+
+    .result {
+      display: none;
+      margin-top: 16px;
+      padding: 12px;
+      border-radius: 10px;
+      background: #eaf6ef;
+      color: var(--success);
+      font-weight: 600;
+      text-align: center;
+    }
+    .result.visible { display: block; }
+    .result.plain { background: #f1ede9; color: var(--text); }
+
+    .hint { margin-top: 20px; font-size: 12px; color: var(--muted); text-align: center; }
+    .hint code { background: #f1ede9; padding: 1px 5px; border-radius: 4px; }
+  </style>
+</head>
+<body>
+  <main class="card">
+    <h1>☕ Coffee Cart</h1>
+    <p class="subtitle">Ваше замовлення</p>
+
+    <div class="item">
+      <span class="item-name">Cappuccino</span>
+      <span>
+        <span class="old-price" data-test="old-price" hidden>$10.00</span>
+        <span class="price" data-test="price">$10.00</span>
+      </span>
+    </div>
+
+    <!-- Промо-блок: з'являється випадково (≈50%) -->
+    <section class="promo" data-test="promo-banner">
+      <p>🎉 Сьогодні вам пощастило! Отримайте знижку 20% на каву.</p>
+      <button class="btn-promo" data-test="apply-promo">Застосувати знижку</button>
+    </section>
+
+    <button class="btn-checkout" data-test="checkout">Оформити замовлення</button>
+
+    <div class="result" data-test="result" role="status"></div>
+
+    <p class="hint">
+      Промо з'являється випадково. Примусово: <code>?promo=on</code> / <code>?promo=off</code>
+    </p>
+  </main>
+
+  <script>
+    // Недетермінованість: банер показується з ймовірністю 50%.
+    // Параметр ?promo=on|off дозволяє зафіксувати гілку для дебагу.
+    const forced = new URLSearchParams(location.search).get('promo');
+    const showPromo = forced ? forced === 'on' : Math.random() < 0.5;
+    if (showPromo) document.body.classList.add('has-promo');
+
+    const price = document.querySelector('[data-test="price"]');
+    const oldPrice = document.querySelector('[data-test="old-price"]');
+    const result = document.querySelector('[data-test="result"]');
+    let discounted = false;
+
+    document.querySelector('[data-test="apply-promo"]').addEventListener('click', () => {
+      discounted = true;
+      oldPrice.hidden = false;
+      price.textContent = '$8.00';
+      price.classList.add('discounted');
+      document.body.classList.remove('has-promo');
+    });
+
+    document.querySelector('[data-test="checkout"]').addEventListener('click', () => {
+      result.textContent = discounted
+        ? 'Замовлення оформлено зі знижкою: $8.00'
+        : 'Замовлення оформлено: $10.00';
+      result.classList.toggle('plain', !discounted);
+      result.classList.add('visible');
+    });
+  </script>
+</body>
+</html>
